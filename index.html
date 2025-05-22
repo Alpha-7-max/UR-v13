@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artisan Dream Engine - Arctic Light (Pro Focus)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F3F4F6; 
+            color: #1F2937; 
+        }
+
+        textarea::-webkit-scrollbar { width: 10px; height: 10px; }
+        textarea::-webkit-scrollbar-track { background: #E5E7EB; border-radius: 10px; }
+        textarea::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #3B82F6, #60A5FA); 
+            border-radius: 10px; border: 2px solid #E5E7EB;
+        }
+        textarea::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #2563EB, #3B82F6); 
+        }
+
+        .arctic-card-wrapper {
+            border-radius: 0.875rem; 
+             border: 1px solid #E5E7EB; 
+        }
+        .arctic-card-content {
+            background-color: #FFFFFF; 
+            border-radius: 0.875rem; 
+        }
+
+        .arctic-title {
+            font-family: 'Poppins', sans-serif; font-weight: 700;
+            color: #1E40AF; 
+        }
+        .arctic-title-icon {
+            color: #2563EB; 
+        }
+
+        .arctic-textarea {
+            background-color: #F9FAFB; border: 1px solid #D1D5DB; 
+            color: #1F2937; border-radius: 0.5rem; padding: 1rem 1.125rem; line-height: 1.65;
+            min-height: 150px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+            resize: none; /* Disable textarea resizing */
+        }
+        .arctic-textarea::placeholder { color: #A1A1AA; }
+        .arctic-textarea:focus {
+            outline: none; 
+            border-color: #3B82F6; /* Accent color for border */
+            /* Cleaner, sharper ring effect using box-shadow */
+            box-shadow: 0 0 0 1px #3B82F6, inset 0 1px 2px rgba(0,0,0,0.03); /* 1px "solid" ring */
+            background-color: #F9FAFB; /* Keep background same as inactive state */
+        }
+
+
+        .mode-selector {
+            background-color: #F3F4F6; border-radius: 0.625rem; padding: 0.375rem; display: flex;
+            border: 1px solid #E5E7EB; 
+        }
+        .mode-selector-button {
+            flex-grow: 1; padding: 0.625rem 0.5rem; border-radius: 0.375rem; text-align: center;
+            font-weight: 500; font-size: 0.875rem; color: #4B5563; 
+            cursor: pointer;
+            transition: background-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+            border: none; 
+            background-color: #E9EBF0; 
+            box-shadow: inset 0 1px 1px rgba(0,0,0,0.03); 
+        }
+        .mode-selector-button.active {
+            background-color: #3B82F6; color: #FFFFFF; font-weight: 600;
+            box-shadow: 0 2px 6px rgba(59, 130, 246, 0.2);
+        }
+        .mode-selector-button:not(.active):hover {
+            background-color: #DDE1E6; 
+            color: #1F2937; 
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .arctic-generate-button {
+            background-image: linear-gradient(to right, #2563EB 0%, #3B82F6 50%, #1D4ED8 100%); 
+            background-size: 200% auto; color: white; font-weight: 600;
+            padding: 0.875rem 2rem; border-radius: 0.625rem;
+            transition: background-position 0.4s ease, transform 0.15s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+        }
+        .arctic-generate-button:hover:not(:disabled) {
+            background-position: right center;
+            box-shadow: 0 6px 15px rgba(59, 130, 246, 0.3);
+            transform: translateY(-1px);
+        }
+        .arctic-generate-button:active:not(:disabled) { transform: translateY(0px); }
+        .arctic-generate-button:disabled {
+            opacity: 0.6; cursor: not-allowed;
+            background-image: linear-gradient(to right, #9CA3AF, #9CA3AF); 
+            box-shadow: none;
+        }
+
+        .arctic-download-button {
+            background-color: #3B82F6; 
+            color: white; font-weight: 500; padding: 0.75rem 1.75rem;
+            border-radius: 0.5rem; transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+            box-shadow: 0 3px 8px rgba(59, 130, 246, 0.2); 
+        }
+        .arctic-download-button:hover:not(:disabled) {
+            background-color: #2563EB; 
+            transform: translateY(-1px); box-shadow: 0 5px 12px rgba(59, 130, 246, 0.25); 
+        }
+        .arctic-download-button:disabled { opacity: 0.6; cursor: not-allowed; background-color: #9CA3AF; }
+        
+        #imageDisplayWrapper {
+            width: 100%; 
+            position: relative; 
+            padding-bottom: 100%; 
+            background-color: #F3F4F6; 
+            border: 1px solid #E5E7EB; 
+            border-radius: 0.625rem; 
+            overflow: hidden; 
+        }
+
+        #imageDisplay {
+            position: absolute; 
+            top: 0; left: 0;
+            width: 100%; height: 100%; 
+            display: flex; align-items: center; justify-content: center;
+        }
+        #generatedImgElement {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain; 
+            border-radius: 0.5rem; 
+        }
+        .image-placeholder-text { color: #A1A1AA; text-align: center; padding: 1rem;}
+        .image-skeleton-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(100deg, transparent 25%, rgba(209, 213, 219, 0.6) 50%, transparent 75%); 
+            background-size: 250% 100%; animation: imageShimmerOverlayLight 1.8s linear infinite; display: none;
+        }
+        #imageDisplay.loading .image-skeleton-overlay { display: block; }
+        @keyframes imageShimmerOverlayLight { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        
+        #errorDisplayContainer {
+            background-color: #FEF2F2; border: 1px solid #FECACA; 
+            color: #B91C1C; padding: 1rem; border-radius: 0.625rem;
+        }
+        #errorDisplayContainer .font-bold { color: #991B1B; }
+
+        .input-util-button {
+            background-color: #EFF6FF; /* Tailwind blue-50 - "Always active" hint */
+            color: #6B7280; /* gray-500 */
+            padding: 0.4rem 0.6rem; 
+            border-radius: 0.375rem;
+            transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+            border: 1px solid #E5E7EB; /* gray-200 - subtle border for definition */
+        }
+        .input-util-button:hover {
+            color: #374151; /* gray-700 */
+            background-color: #DBEAFE; /* Tailwind blue-100 (Dimmed hover) */
+            border-color: #BFDBFE; /* blue-200 */
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4 selection:bg-blue-500 selection:text-white">
+
+    <div class="w-full max-w-4xl arctic-card-wrapper">
+        <div class="arctic-card-content p-6 md:p-8 space-y-7">
+
+            <header class="text-center">
+                <h1 class="text-3xl md:text-4xl arctic-title mb-2 flex items-center justify-center">
+                    <i class="fas fa-sun arctic-title-icon mr-3 text-2xl md:text-3xl"></i>Artisan Dream Engine
+                </h1>
+            </header>
+
+            <div class="flex flex-col md:flex-row md:gap-x-8 gap-y-7">
+                <div class="md:w-[55%] w-full space-y-7 flex flex-col">
+                    <section id="mode-selection-wrapper" class="pt-1">
+                        <div id="modeSelectorContainer" class="mode-selector">
+                            <button type="button" id="realisticModeBtn" class="mode-selector-button active" data-value="realistic">Realistic</button>
+                            <button type="button" id="unrealisticModeBtn" class="mode-selector-button" data-value="unrealistic">Artistic & Creative</button>
+                            <input type="radio" id="realisticMode" name="generationMode" value="realistic" class="hidden" checked>
+                            <input type="radio" id="unrealisticMode" name="generationMode" value="unrealistic" class="hidden">
+                        </div>
+                    </section>
+
+                    <section id="input-section" class="flex-grow flex flex-col">
+                        <div class="flex justify-between items-center mb-2.5">
+                            <label for="userInput" class="block text-sm font-medium text-gray-700">
+                                <i class="fas fa-pencil-alt mr-1.5 text-gray-500"></i>Your Prompt:
+                            </label>
+                            <div>
+                                <button id="pasteButton" title="Paste from clipboard" class="input-util-button text-xs">
+                                    <i class="fas fa-paste mr-1"></i> Paste
+                                </button>
+                                <button id="clearButton" title="Clear input" class="input-util-button text-xs ml-1.5">
+                                    <i class="fas fa-times-circle mr-1"></i> Clear
+                                </button>
+                            </div>
+                        </div>
+                        <textarea id="userInput" rows="6" class="w-full arctic-textarea flex-grow" placeholder="Describe Your Idea..."></textarea>
+
+                        <div class="mt-6 flex justify-center">
+                            <button id="generateImageButton" class="w-full sm:w-auto arctic-generate-button flex items-center justify-center">
+                                <i id="generateButtonIcon" class="fas fa-lightbulb mr-2.5"></i>
+                                <span id="generateButtonText">Generate Image</span>
+                            </button>
+                        </div>
+                    </section>
+
+                    <section id="errorDisplayContainer" class="hidden mt-4" role="alert">
+                        <div class="flex items-center">
+                            <div class="py-1"><i class="fas fa-exclamation-triangle mr-3 text-xl text-red-500"></i></div>
+                            <div>
+                                <p class="font-bold">Oops! Something Went Wrong</p>
+                                <p id="errorMessage" class="text-sm">An error occurred.</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="md:w-[45%] w-full">
+                    <section id="image-output-area" class="h-full flex flex-col">
+                        <div id="imageDisplayWrapper">
+                             <div id="imageDisplay">
+                                <p id="imagePlaceholderText" class="image-placeholder-text">Your image will appear here...</p>
+                                <img id="generatedImgElement" src="#" alt="Generated Image" class="hidden"> 
+                                <div class="image-skeleton-overlay"></div>
+                            </div>
+                        </div>
+                        <div id="downloadButtonContainer" class="text-center mt-4 shrink-0 hidden"> 
+                            <button id="downloadImageButton" class="arctic-download-button flex items-center justify-center mx-auto">
+                                <i class="fas fa-download mr-2"></i>
+                                Download Image
+                            </button>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <footer class="text-center mt-5 pt-5">
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        // --- API Keys Configuration ---
+        const API_KEYS = [
+            "AIzaSyDSF270Y1VJf1fe4G8ZAuw7bOITbAlal74", 
+            "AIzaSyBx2-nzwDEmvil677vHCnfFmWk0bjc2ktc", 
+            "AIzaSyCP0_JSlzsnNKczFe-dBTZyoyKBwvvP6UE", 
+            "AIzaSyDgEdgBX2VWf2PO4X29haQzISTDTemzuW4"  
+        ];
+        let currentApiKeyIndex = 0;
+        const MAX_API_CALL_ATTEMPTS = API_KEYS.length; 
+        // --- End API Keys Configuration ---
+        
+        const TEXT_MODEL_NAME_REALISTIC = "gemini-2.0-flash";
+        const IMAGE_MODEL_NAME = "gemini-2.0-flash-preview-image-generation";
+        const TEXT_MODEL_NAME_UNREALISTIC = "gemini-2.5-flash-preview-04-17";
+
+        const REFINE_SYSTEM_INSTRUCTION_REALISTIC = `You are an AI prompt enhancer designed for a beginner-friendly text-to-image generation tool. Your responsibility is to enhance user prompts in a way that retains their original language, tone, and intent while making the prompt more visually descriptive and render-friendly. Your enhancement style depends on the complexity of the input. ------------------------------- 📏 Prompt Length Strategy: ------------------------------- 1. If the user's prompt is: - Short, direct, and clear (e.g., "Create now: Ferrari car image") - Includes specific subject and style (e.g., "anime girl cyberpunk style") ➤ Then generate a **simple enhanced prompt (1–3 lines)** that adds light, relevant detail (e.g., color, motion, mood, lighting) without overcomplicating the prompt. The goal is to stay fast and beginner-friendly. 2. If the user's prompt is: - Abstract, artistic, or ambiguous (e.g., "make it dreamy and nostalgic") - Mentions a specific theme, character concept, or film/game/art style (e.g., "create now elon musk ghiblish style image") - Needs environmental, stylistic, or storytelling detail ➤ Then generate a **detailed enhanced prompt (4–6 lines)** that: - Deepens the visual richness - Describes the subject, style, environment, lighting, textures, and composition - Still respects and reflects the user’s original phrasing and intent ------------------------------- 🔒 Rules You Must Follow: ------------------------------- 1. Always preserve key phrases, keywords, and tone (e.g., "create now", "make it look epic"). 2. Do not change the subject, style, or meaning of the original input. 3. Never invent new concepts, characters, or ideas not present in the original. 4. Avoid over-formalizing user’s expressive, casual, or slang-based input. 5. Never output explanations — only the final refined prompt. ------------------------------- 🧪 Examples: ------------------------------- Simple Input → Simple Output: -------------------------------- Input: "Create now: Ferrari car image" Output: "Create now: Ferrari car image — sleek red body, aerodynamic shape, speeding on a race track under sunlight." Input: "anime girl cyberpunk style" Output: "Anime girl in cyberpunk style — glowing neon lights, futuristic city, digital interface in the background." Detailed Input → Detailed Output: -------------------------------- Input: "create now elon musk ghiblish style image" Output: "Create now: Elon Musk in Ghiblish style — dreamy and whimsical, wearing a simple tunic with forest elements. Surrounded by glowing mushrooms and Kodama spirits, in a lush, magical forest. Soft painterly lighting inspired by Studio Ghibli aesthetics." Input: "vintage vampire lord painted in oil" Output: "A vintage oil painting of a vampire lord — pale skin, red eyes, elegant dark cloak with golden trim. Standing in a candle-lit gothic hall, with cracked stone walls and dusty crimson curtains. Shadows and warm candlelight create dramatic contrast." ------------------------------- Make every enhancement useful, balanced, and context-aware. Adapt prompt length and richness based on the user’s input style — never more, never less."`;
+        const REFINE_SYSTEM_INSTRUCTION_UNREALISTIC = `As an AI prompt engineer, your core responsibility is to refine user input into a clear, highly descriptive, and structured prompt suitable for an advanced text-to-image generation model. Focus on vivid imagery, detailed descriptions of subjects, environments, artistic styles, lighting, and composition. Expand on the user's core idea to add depth and specificity. The output should be a single, coherent paragraph or a few closely related paragraphs forming the final prompt. Do not include conversational elements, self-references, or explanations of your process. Only output the refined prompt itself. For example, if the input is "cat in space", a refined prompt might be: "A photorealistic image of a fluffy ginger tabby cat wearing a miniature astronaut helmet, floating gracefully in the vast emptiness of space. Nebulae and distant galaxies twinkle in the background, with Earth visible as a small blue marble. The lighting is ethereal, with a soft glow emanating from a nearby star, casting subtle highlights on the cat's fur and helmet."`;
+
+        const userInputEl = document.getElementById('userInput');
+        const generateImageButtonEl = document.getElementById('generateImageButton');
+        const generateButtonIconEl = document.getElementById('generateButtonIcon');
+        const generateButtonTextEl = document.getElementById('generateButtonText');
+        
+        const errorDisplayContainerEl = document.getElementById('errorDisplayContainer');
+        const errorMessageEl = document.getElementById('errorMessage');
+
+        const imageDisplayEl = document.getElementById('imageDisplay');
+        const imagePlaceholderTextEl = document.getElementById('imagePlaceholderText');
+        const generatedImgElement = document.getElementById('generatedImgElement');
+        const downloadButtonContainerEl = document.getElementById('downloadButtonContainer');
+        const downloadImageButtonEl = document.getElementById('downloadImageButton');
+
+        const realisticModeBtn = document.getElementById('realisticModeBtn');
+        const unrealisticModeBtn = document.getElementById('unrealisticModeBtn');
+        const realisticModeRadio = document.getElementById('realisticMode');
+        const unrealisticModeRadio = document.getElementById('unrealisticMode');
+
+        const pasteButton = document.getElementById('pasteButton');
+        const clearButton = document.getElementById('clearButton');
+
+        let currentImageSrc = null;
+
+        function setActiveMode(selectedBtn, selectedRadio) {
+            realisticModeBtn.classList.remove('active');
+            unrealisticModeBtn.classList.remove('active');
+            selectedBtn.classList.add('active');
+            selectedRadio.checked = true;
+        }
+        realisticModeBtn.addEventListener('click', () => setActiveMode(realisticModeBtn, realisticModeRadio));
+        unrealisticModeBtn.addEventListener('click', () => setActiveMode(unrealisticModeBtn, unrealisticModeRadio));
+        
+        pasteButton.addEventListener('click', async () => {
+            try {
+                const text = await navigator.clipboard.readText();
+                userInputEl.value += text; 
+                userInputEl.focus();
+            } catch (err) {
+                console.warn('Paste failed:', err);
+            }
+        });
+
+        clearButton.addEventListener('click', () => {
+            userInputEl.value = '';
+            userInputEl.focus();
+            resetImageOutputArea(); 
+        });
+
+        function displayError(message) {
+            errorMessageEl.textContent = message;
+            errorDisplayContainerEl.classList.remove('hidden');
+        }
+
+        function clearError() {
+            errorDisplayContainerEl.classList.add('hidden');
+            errorMessageEl.textContent = '';
+        }
+
+        function resetImageOutputArea() {
+            imagePlaceholderTextEl.classList.remove('hidden');
+            generatedImgElement.classList.add('hidden');
+            generatedImgElement.src = "#";
+            downloadButtonContainerEl.classList.add('hidden');
+            currentImageSrc = null;
+            downloadImageButtonEl.disabled = true;
+        }
+
+        function setButtonsLoadingState(isLoading) {
+            generateImageButtonEl.disabled = isLoading;
+            imageDisplayEl.classList.toggle('loading', isLoading); 
+
+            if (isLoading) {
+                generateButtonIconEl.className = 'fas fa-spinner fa-spin mr-2.5'; 
+                generateButtonTextEl.textContent = 'Generating...';
+                resetImageOutputArea(); 
+            } else { 
+                generateButtonIconEl.className = 'fas fa-lightbulb mr-2.5';
+                generateButtonTextEl.textContent = 'Generate Image';
+                if (!currentImageSrc) {
+                    resetImageOutputArea();
+                }
+            }
+        }
+
+        async function callGenerativeAPI(modelName, userPrompt, systemInstructionText = null, isImageGeneration = false, generationConfigOverride = null, attempt = 1) {
+            if (attempt > MAX_API_CALL_ATTEMPTS) {
+                console.error("All API keys failed after " + MAX_API_CALL_ATTEMPTS + " attempts.");
+                throw new Error(`All API keys exhausted or failed. Please check your API keys and their quotas.`);
+            }
+
+            const currentKey = API_KEYS[currentApiKeyIndex];
+            const API_URL_BASE = `https://generativelanguage.googleapis.com/v1beta/models/`;
+            const fullApiUrl = `${API_URL_BASE}${modelName}:generateContent?key=${currentKey}`;
+            
+            let defaultTextConfig = { temperature: 0.7, topK: 40, topP: 0.95, maxOutputTokens: 1024 }; 
+            let defaultImageConfig = { responseModalities: ["TEXT", "IMAGE"] };
+            let requestBody;
+
+            if (systemInstructionText && !isImageGeneration) {
+                 requestBody = {
+                    contents: [{ role: "user", parts: [{ text: userPrompt }] }],
+                    systemInstruction: { parts: [{ text: systemInstructionText }] },
+                    generationConfig: generationConfigOverride || defaultTextConfig
+                };
+            } else if (isImageGeneration) {
+                requestBody = {
+                    contents: [{ parts: [{ text: userPrompt }] }],
+                    generationConfig: { ...defaultImageConfig, ...(generationConfigOverride || {}) }
+                };
+            } else { 
+                 requestBody = {
+                    contents: [{ role: "user", parts: [{ text: userPrompt }] }],
+                    generationConfig: generationConfigOverride || defaultTextConfig
+                };
+            }
+            
+            try {
+                const response = await fetch(fullApiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody) });
+                const responseData = await response.json().catch(() => ({ error: { message: "Non-JSON response from API. Check network or API endpoint." } }));
+
+                if (!response.ok) {
+                    const errorMessageText = responseData.error?.message?.toLowerCase() || "";
+                    if (response.status === 429 || 
+                        (response.status === 400 && (errorMessageText.includes("api key not valid") || errorMessageText.includes("key is invalid"))) ||
+                        (response.status === 403 && (errorMessageText.includes("permission denied") || errorMessageText.includes("key is restricted")))
+                    ) {
+                        const previousKeySnippet = currentKey.substring(0,10) + "..." + currentKey.slice(-4);
+                        currentApiKeyIndex = (currentApiKeyIndex + 1) % API_KEYS.length;
+                        const nextKeySnippet = API_KEYS[currentApiKeyIndex].substring(0,10) + "..." + API_KEYS[currentApiKeyIndex].slice(-4);
+                        
+                        console.warn(`API Key ${previousKeySnippet} failed (Status: ${response.status}). Rotating to key index ${currentApiKeyIndex} (${nextKeySnippet}). Attempt ${attempt}/${MAX_API_CALL_ATTEMPTS}.`);
+                        console.log("Status: Switching API key due to usage limits. Retrying...");
+                        return callGenerativeAPI(modelName, userPrompt, systemInstructionText, isImageGeneration, generationConfigOverride, attempt + 1);
+                    }
+                    
+                    let detail = `API Error (${response.status}): ${responseData.error?.message || response.statusText || "Unknown error from API."}`;
+                    if (String(responseData.error?.message).includes("User location is not supported")) detail = "API access from your current location is not supported by the model provider.";
+                    throw new Error(detail);
+                }
+                
+                console.log(`API call successful with key index ${currentApiKeyIndex} (${currentKey.substring(0,10)}...${currentKey.slice(-4)})`);
+
+                if (isImageGeneration) {
+                    const candidate = responseData.candidates?.[0];
+                    if (!candidate) throw new Error("No candidate found in API response for image generation.");
+
+                    if (candidate.finishReason === "SAFETY" || responseData.promptFeedback?.blockReason) {
+                        const reason = responseData.promptFeedback?.blockReason || candidate.finishReason || "Safety";
+                        let safetyDetails = responseData.promptFeedback?.safetyRatings?.map(r => `${r.category.replace('HARM_CATEGORY_','')} (${r.probability})`).join(', ') || "Details not provided";
+                        throw new Error(`Image generation blocked due to safety policies. Reason: ${reason}. Details: ${safetyDetails}`);
+                    }
+                    
+                    const imgPart = candidate.content?.parts?.find(p => p.inlineData?.mimeType?.startsWith('image/'));
+                    if (imgPart && imgPart.inlineData.data) return imgPart.inlineData.data;
+                    
+                    const textPart = candidate.content?.parts?.find(p => p.text);
+                    if (textPart && textPart.text.toLowerCase().includes("unable to generate image")) {
+                         throw new Error(`API indicated inability to generate image: ${textPart.text}`);
+                    }
+                    throw new Error("Failed to find valid image data in API response. The response structure might have changed or the generation failed silently.");
+                } else { 
+                    const candidate = responseData.candidates?.[0];
+                     if (!candidate) throw new Error("No candidate found in API response for text generation.");
+
+                    if (candidate.finishReason === "SAFETY" || responseData.promptFeedback?.blockReason) {
+                        const reason = responseData.promptFeedback?.blockReason || candidate.finishReason || "Safety";
+                        let safetyDetails = responseData.promptFeedback?.safetyRatings?.map(r => `${r.category.replace('HARM_CATEGORY_','')} (${r.probability})`).join(', ') || "Details not provided";
+                        throw new Error(`Text generation blocked due to safety policies. Reason: ${reason}. Details: ${safetyDetails}`);
+                    }
+
+                    if (candidate.content?.parts?.[0]?.text) return candidate.content.parts[0].text.trim();
+                    throw new Error("Failed to extract text from API response. Check response structure.");
+                }
+            } catch (error) {
+                console.error(`Error in callGenerativeAPI (attempt ${attempt}, key index ${currentApiKeyIndex}):`, error);
+                throw error;
+            }
+        }
+
+        async function refineUserPromptInternal(textToRefine) {
+            const selectedModeRadio = document.querySelector('input[name="generationMode"]:checked');
+            const selectedMode = selectedModeRadio ? selectedModeRadio.value : 'realistic'; 
+            let modelToUse, instructionToUse;
+
+            if (selectedMode === 'unrealistic') {
+                modelToUse = TEXT_MODEL_NAME_UNREALISTIC; instructionToUse = REFINE_SYSTEM_INSTRUCTION_UNREALISTIC;
+            } else { 
+                modelToUse = TEXT_MODEL_NAME_REALISTIC; instructionToUse = REFINE_SYSTEM_INSTRUCTION_REALISTIC;
+            }
+            return callGenerativeAPI(modelToUse, textToRefine, instructionToUse, false);
+        }
+
+        async function runImageGenerationProcess() {
+            const originalPrompt = userInputEl.value.trim();
+            if (!originalPrompt) {
+                displayError("Please enter an idea to generate an image.");
+                return;
+            }
+
+            setButtonsLoadingState(true); 
+            clearError();
+            
+            let refinedPromptForImage;
+
+            try {
+                console.log("Status: Refining your idea..."); 
+                refinedPromptForImage = await refineUserPromptInternal(originalPrompt);
+                
+                console.log(`Status: Idea refined. Generating image...`); 
+                
+                const generatedImageDataB64 = await callGenerativeAPI(IMAGE_MODEL_NAME, refinedPromptForImage, null, true);
+                console.log("Status: Image generation complete!");
+
+                currentImageSrc = `data:image/png;base64,${generatedImageDataB64}`;
+                
+                imagePlaceholderTextEl.classList.add('hidden');
+                generatedImgElement.src = currentImageSrc;
+                generatedImgElement.alt = `Generated: ${originalPrompt.substring(0,50)}...`;
+                generatedImgElement.classList.remove('hidden');
+                
+                downloadButtonContainerEl.classList.remove('hidden');
+                downloadImageButtonEl.disabled = false;
+
+            } catch (error) {
+                console.error("Image Generation Pipeline Error:", error);
+                displayError(error.message || "An unexpected error occurred during image generation.");
+            } finally {
+                setButtonsLoadingState(false);
+            }
+        }
+
+        generateImageButtonEl.addEventListener('click', runImageGenerationProcess);
+
+        downloadImageButtonEl.addEventListener('click', () => {
+            if (!currentImageSrc || downloadImageButtonEl.disabled) return;
+            const link = document.createElement('a');
+            link.href = currentImageSrc;
+            const userFileName = userInputEl.value.trim().toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '').substring(0,35);
+            link.download = `artisan_light_${userFileName || 'image'}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+
+        userInputEl.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey && !generateImageButtonEl.disabled) {
+                e.preventDefault();
+                if (userInputEl.value.trim()) {
+                    generateImageButtonEl.click();
+                }
+            }
+        });
+        
+        resetImageOutputArea();
+        if(realisticModeRadio.checked) realisticModeBtn.classList.add('active');
+        else if(unrealisticModeRadio.checked) unrealisticModeBtn.classList.add('active');
+
+    </script>
+</body>
+</html>
